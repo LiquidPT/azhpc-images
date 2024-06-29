@@ -1,8 +1,14 @@
 #!/bin/bash
 set -ex
 
+# install pre-requisites
+./install_prerequisites.sh
+
 # set properties
 source ./set_properties.sh
+
+# remove packages requiring Ubuntu Pro for security updates
+$UBUNTU_COMMON_DIR/remove_unused_packages.sh
 
 # install utils
 ./install_utils.sh
@@ -12,6 +18,9 @@ $UBUNTU_COMMON_DIR/install_lustre_client.sh
 
 # install mellanox ofed
 ./install_mellanoxofed.sh
+
+# install PMIX
+$UBUNTU_COMMON_DIR/install_pmix.sh
 
 # install mpi libraries
 ./install_mpis.sh

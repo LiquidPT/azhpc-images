@@ -3,10 +3,11 @@ set -ex
 
 #
 # install rdma_rename with NAME_FIXED option
+# install rdma_rename monitor
 #
 
 pushd /tmp
-rdma_core_branch=stable-v34
+rdma_core_branch=$(jq -r '.rdma_core."'"$DISTRIBUTION"'".branch' <<< $COMPONENT_VERSIONS)
 git clone -b $rdma_core_branch https://github.com/linux-rdma/rdma-core.git
 pushd rdma-core
 bash build.sh
@@ -68,3 +69,5 @@ EOF
 
 systemctl enable azure_persistent_rdma_naming.service
 systemctl start azure_persistent_rdma_naming.service
+
+$COMMON_DIR/install_azure_persistent_rdma_naming_monitor.sh      
