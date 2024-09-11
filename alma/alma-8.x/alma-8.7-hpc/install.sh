@@ -4,6 +4,16 @@ set -ex
 # install pre-requisites
 ./install_prerequisites.sh
 
+export GPU="NVIDIA"
+
+if [[ "$#" -gt 0 ]]; then
+    INPUT=$1
+    if [ "$INPUT" != "NVIDIA" ]; then
+        echo "Error: Invalid GPU type. Only 'NVIDIA' is implemented for this OS."
+	exit 1
+    fi
+fi
+
 # set properties
 source ./set_properties.sh
 
@@ -16,23 +26,23 @@ $ALMA_COMMON_DIR/install_lustre_client.sh "8"
 # install compilers
 ./install_gcc.sh
 
-# install mellanox ofed
-./install_mellanoxofed.sh
+# install DOCA OFED
+$ALMA_COMMON_DIR/install_doca.sh
 
 # install PMIX
 $ALMA_COMMON_DIR/install_pmix.sh
 
 # install mpi libraries
-./install_mpis.sh
+$ALMA_COMMON_DIR/install_mpis.sh
 
 # install nvidia gpu driver
 $ALMA_COMMON_DIR/install_nvidiagpudriver.sh
 
 # install AMD tuned libraries
-$ALMA_COMMON_DIR/install_amd_libs.sh
+$COMMON_DIR/install_amd_libs.sh
 
 # install Intel libraries
-$ALMA_COMMON_DIR/install_intel_libs.sh
+$COMMON_DIR/install_intel_libs.sh
 
 # cleanup downloaded tarballs - clear some space
 rm -rf *.tgz *.bz2 *.tbz *.tar.gz *.run *.deb *_offline.sh
@@ -52,6 +62,9 @@ $ALMA_COMMON_DIR/install_dcgm.sh
 # optimizations
 $ALMA_COMMON_DIR/hpc-tuning.sh
 
+# Install AZNFS Mount Helper
+$COMMON_DIR/install_aznfs.sh
+
 # install persistent rdma naming
 $COMMON_DIR/install_azure_persistent_rdma_naming.sh
 
@@ -65,7 +78,7 @@ $ALMA_COMMON_DIR/network-config.sh
 $COMMON_DIR/install_hpcdiag.sh
 
 #install monitoring tools
-$ALMA_COMMON_DIR/install_monitoring_tools.sh
+$COMMON_DIR/install_monitoring_tools.sh
 
 # install Azure/NHC Health Checks
 $COMMON_DIR/install_health_checks.sh

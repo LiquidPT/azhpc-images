@@ -1,7 +1,10 @@
 #!/bin/bash
 set -ex
 
-PMIX_VERSION=$(jq -r '.pmix."'"$DISTRIBUTION"'".version' <<< $COMPONENT_VERSIONS)
+source ${COMMON_DIR}/utilities.sh
+
+pmix_metadata=$(get_component_config "pmix")
+PMIX_VERSION=$(jq -r '.version' <<< $pmix_metadata)
 REPO_DIR="$ALMA_COMMON_DIR"
 
 cp ${REPO_DIR}/slurmel8.repo /etc/yum.repos.d/slurm.repo
@@ -15,6 +18,6 @@ if [ ! -e /etc/yum.repos.d/microsoft-prod.repo ];then
 fi
 
 dnf config-manager --set-enabled powertools
-yum -y install pmix-$PMIX_VERSION.el8 hwloc-devel libevent-devel munge-devel
+yum -y install pmix-${PMIX_VERSION}.el8 hwloc-devel libevent-devel munge-devel
 
 $COMMON_DIR/write_component_version.sh "PMIX" ${PMIX_VERSION}

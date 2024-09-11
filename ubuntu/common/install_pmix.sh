@@ -1,7 +1,10 @@
 #!/bin/bash
 set -ex
 
-PMIX_VERSION=$(jq -r '.pmix."'"$DISTRIBUTION"'".version' <<< $COMPONENT_VERSIONS)
+source ${COMMON_DIR}/utilities.sh
+
+pmix_metadata=$(get_component_config "pmix")
+PMIX_VERSION=$(jq -r '.version' <<< $pmix_metadata)
 UBUNTU_VERSION=$(cat /etc/os-release | grep VERSION_ID | cut -d= -f2 | cut -d\" -f2)
 
 if [ $UBUNTU_VERSION == 22.04 ]; then
@@ -42,10 +45,10 @@ fi
 
 apt update
 
-apt install -y pmix=$PMIX_VERSION libevent-dev libhwloc-dev # libmunge-dev
+apt install -y pmix=${PMIX_VERSION} libevent-dev libhwloc-dev # libmunge-dev
 
 # Hold versions of packages to prevent accidental updates. Packages can still be upgraded explictly by
 # '--allow-change-held-packages' flag.
-apt-mark hold pmix=$PMIX_VERSION libevent-dev libhwloc-dev # libmunge-dev
+apt-mark hold pmix=${PMIX_VERSION} libevent-dev libhwloc-dev # libmunge-dev
 
 $COMMON_DIR/write_component_version.sh "PMIX" ${PMIX_VERSION}
