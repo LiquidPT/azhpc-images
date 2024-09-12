@@ -10,7 +10,7 @@ LUSTRE_VERSION=$(jq -r '.version' <<< $lustre_metadata)
 source $UBUNTU_COMMON_DIR/setup_lustre_repo.sh
 
 apt-get update
-apt-get install -y amlfs-lustre-client-${LUSTRE_VERSION}=$(uname -r)
+apt-get install -y amlfs-lustre-client-${LUSTRE_VERSION}=${KERNEL_VERSION}
 apt-mark hold amlfs-lustre-client-${LUSTRE_VERSION}
 
 $COMMON_DIR/write_component_version.sh "LUSTRE" ${LUSTRE_VERSION}

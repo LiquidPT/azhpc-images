@@ -37,7 +37,7 @@ NVIDIA_DRIVER_URL=https://us.download.nvidia.com/tesla/${NVIDIA_DRIVER_VERSION}/
 
 $COMMON_DIR/download_and_verify.sh $NVIDIA_DRIVER_URL ${NVIDIA_DRIVER_SHA256}
 bash NVIDIA-Linux-x86_64-${NVIDIA_DRIVER_VERSION}.run --silent --dkms
-dkms install --no-depmod -m nvidia -v ${NVIDIA_DRIVER_VERSION} -k `uname -r` --force
+dkms install --no-depmod -m nvidia -v ${NVIDIA_DRIVER_VERSION} -k ${KERNEL_VERSION} --force
 $COMMON_DIR/write_component_version.sh "NVIDIA" ${NVIDIA_DRIVER_VERSION}
 
 # load the nvidia-peermem coming as a part of NVIDIA GPU driver

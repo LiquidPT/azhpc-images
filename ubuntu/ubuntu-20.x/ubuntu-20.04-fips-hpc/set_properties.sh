@@ -6,6 +6,7 @@ export TOOLS_DIR=../../../tools
 export UBUNTU_COMMON_DIR=../../common
 export TEST_DIR=../../../tests
 export DISTRIBUTION=$(. /etc/os-release;echo $ID$VERSION_ID)
+export KERNEL_VERSION=$(uname -r | sed -e 's/\-fips$//')
 
 # Component Versions
 export COMPONENT_VERSIONS=$(jq -r . $TOP_DIR/versions.json)

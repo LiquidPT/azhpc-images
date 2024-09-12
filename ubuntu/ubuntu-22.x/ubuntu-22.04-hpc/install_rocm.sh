@@ -28,7 +28,7 @@ cat /etc/security/limits.conf | grep -v "  stack" > tmplimits.conf
 mv tmplimits.conf /etc/security/limits.conf
 
 echo blacklist amdgpu | tee -a /etc/modprobe.d/blacklist.conf
-update-initramfs -c -k $(uname -r)
+update-initramfs -c -k ${KERNEL_VERSION}
 
 echo "Writing gpu mode probe in init.d"
 cat <<'EOF' > /tmp/tempinit.sh
