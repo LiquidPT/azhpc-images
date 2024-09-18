@@ -233,6 +233,9 @@
     "lustre": {
         "common": {
             "version": "2.15.4-42-gd6d405d"
+        },
+        "ubuntu20.04-fips": {
+            "version": "2.15.3-43-gd7e07df"
         }
     },
     "aznhc": {
