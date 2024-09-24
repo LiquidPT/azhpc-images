@@ -220,7 +220,8 @@
         },
         "mariner2.0": {
             "version": "2.4.1",
-            "sha256": "faa7e816e9bad3301e53d6721457f7ef5ab42b7aa3b01ffda51f8e5620bb20ed"
+            "sha256": "faa7e816e9bad3301e53d6721457f7ef5ab42b7aa3b01ffda51f8e5620bb20ed",
+            "distribution": "el8"
         }
     },
     "nccl": {
