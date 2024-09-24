@@ -96,9 +96,9 @@
             "url": "https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.2.tar.gz"
         },
         "mariner2.0": {
-            "version": "4.1.5",
-            "sha256": "c018b127619d2a2a30c1931f316fc8a245926d0f5b4ebed4711f9695e7f70925",
-            "url": "https://download.open-mpi.org/release/open-mpi/v4.1/openmpi-4.1.5.tar.gz"
+            "version": "5.0.5",
+            "sha256": "5cbefa0780b84f4126743c40cdd6a334b2f0574cd7fd95050fb1ac0ddbb7f0b8",
+            "url": "https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.5.tar.gz"
         }
     },
     "impi": {
@@ -118,9 +118,9 @@
             "url": "https://registrationcenter-download.intel.com/akdlm/IRC_NAS/749f02a5-acb8-4bbb-91db-501ff80d3f56/l_mpi_oneapi_p_2021.12.0.538_offline.sh"
         },
         "mariner2.0": {
-            "version": "2021.9.0",
-            "sha256": "5c170cdf26901311408809ced28498b630a494428703685203ceef6e62735ef8",
-            "url": "https://registrationcenter-download.intel.com/akdlm/IRC_NAS/718d6f8f-2546-4b36-b97b-bc58d5482ebf/l_mpi_oneapi_p_2021.9.0.43482_offline.sh"
+            "version": "2021.13.1",
+            "sha256": "be61c4792d25bd4a1b5f7b808c06a9f4676f1b247d7605ac6d3c6cffdb8f19b7",
+            "url": "https://registrationcenter-download.intel.com/akdlm/IRC_NAS/364c798c-4cad-4c01-82b5-e1edd1b476af/l_mpi_oneapi_p_2021.13.1.769_offline.sh"
         }
     },
     "nvidia": {
@@ -162,7 +162,7 @@
         },
         "mariner2.0": {
             "driver": {
-                "version": "535.129.03"
+                "version": "550.54.15"
             },
             "fabricmanager": {
                 "version": "535.129.03"
@@ -199,12 +199,12 @@
         },
         "mariner2.0": {
             "driver": {
-                "version": "12-2",
+                "version": "12-5",
                 "distribution": "rhel8"
             },
             "samples": {
-                "version": "12.2",
-                "sha256": "1823cfe28e97a9230107aa72b231f78952c0f178b71a920f036d360518480bdc"
+                "version": "12.5",
+                "sha256": "5c40cc096706045b067ec5897f039403014aa7a39b970905698466a2d029b972"
             }  
         }
     },
@@ -219,8 +219,8 @@
             "version": "2.3"
         },
         "mariner2.0": {
-            "version": "2.3",
-            "sha256": "b85d15901889aa42de6c4a9233792af40dd94543e82abe0439e544c87fd79475"
+            "version": "2.4.1",
+            "sha256": "faa7e816e9bad3301e53d6721457f7ef5ab42b7aa3b01ffda51f8e5620bb20ed"
         }
     },
     "nccl": {
@@ -243,9 +243,9 @@
             }
         },
         "mariner2.0": {
-            "version": "2.18.1-1",
+            "version": "2.22.3-1",
             "rdmasharpplugins": {
-                "commit": "575c1e0"
+                "commit": "v2.7.x"
             }
         }
     },
@@ -282,9 +282,9 @@
             "url": "https://registrationcenter-download.intel.com/akdlm/IRC_NAS/86d6a4c1-c998-4c6b-9fff-ca004e9f7455/l_onemkl_p_2024.0.0.49673_offline.sh"
         },
         "mariner2.0": {
-            "version": "2023.2.0.49497",
-            "sha256": "4a0d93da85a94d92e0ad35dc0fc3b3ab7f040bd55ad374c4d5ec81a57a2b872b",
-            "url": "https://registrationcenter-download.intel.com/akdlm/IRC_NAS/adb8a02c-4ee7-4882-97d6-a524150da358/l_onemkl_p_2023.2.0.49497_offline.sh"
+            "version": "2024.2.1.105",
+            "sha256": "adfb1391f87a0a638772ac3146db92126a4accf4da1fe8707a000b27dd2448ef",
+            "url": "https://registrationcenter-download.intel.com/akdlm/IRC_NAS/6e00e368-b61d-4f87-a409-9b510c022a37/l_onemkl_p_2024.2.1.105_offline.sh"
         }
     },
     "waagent": {
@@ -308,7 +308,7 @@
             "version": "0.3.5"
         },
         "mariner2.0": {
-            "version": "0.3.4"
+            "version": "0.3.5"
         }
     },
     "pssh": {
@@ -343,12 +343,12 @@
         },
         "mariner2.0": {
             "aocl": {
-                "version": "4.0",
-                "sha256": "c8000a66aaa2a257252cbb307732b4e66758b72b08f43b3723f4eb5404ba28c8"
+                "version": "4.2.0",
+                "sha256": "d25aa17dec5b50b89414d7faff2d72a2c959987fe1a4a0a5842878a3fe079d5c"
             },
             "aocc": {
-                "version": "4.0.0-1",
-                "sha256": "bdeb4d6a24c7e783821ff02ce50f253587cf93b128f0c84eeb506698dcd8c9d3"
+                "version": "4.2.0-1",
+                "sha256": "ed5a560ec745b24dc0685ccdcbde914843fb2f2dfbfce1ba592de4ffbce1ccab"
             } 
         }
     },
@@ -363,7 +363,7 @@
             "version": "2.15.4-42-gd6d405d"
         },
         "mariner2.0": {
-            "version": "2.15.1_24_gbaa21ca"
+            "version": "2.15.4-42-gd6d405d"
         }
     },
     "aznhc": {
@@ -391,7 +391,7 @@
             "branch": "stable-v48"
         },
         "mariner2.0": {
-            "branch": "stable-v48"
+            "branch": "v53.0"
         }
     },
     "pmix": {
