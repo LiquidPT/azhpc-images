@@ -56,9 +56,9 @@
             "url": "https://content.mellanox.com/hpc/hpc-x/v2.18/hpcx-v2.18-gcc-mlnx_ofed-redhat8-cuda12-x86_64.tbz"
         },
         "mariner2.0": {
-            "version": "2.15",
-            "sha256": "0ca27ef0d6fa3d6be176f461977875030bc8cc130a784e216b1c23259c733e41",
-            "url": "https://azhpcstor.blob.core.windows.net/azhpc-images-store/hpcx-v2.15-gcc-MLNX_OFED_LINUX-5-redhat8-cuda12-gdrcopy2-nccl2.17-x86_64.tbz"
+            "version": "2.18",
+            "sha256": "45276ff7bd676cc668d1cc6a1fe926d5e157646aaf06201415e0aadb048be16d",
+            "url": "https://content.mellanox.com/hpc/hpc-x/v2.18/hpcx-v2.18-gcc-mlnx_ofed-redhat8-cuda12-x86_64.tbz"
         }
     },
     "mvapich2": {
