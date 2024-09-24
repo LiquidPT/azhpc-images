@@ -35,8 +35,8 @@
             "sha256": "34e826fea03d6505b50909959ed029282a6238c75830fbe5b2bc15442cf8f8b5"
         },
         "mariner2.0": {
-            "version": "23.10-1.1.9.0",
-            "sha256": "3201e0f1f27e5dcc9af32127e268065fe08362ef46a6029d6ae70949d69a3b5e"
+            "version": "24.07-0.6.1.0",
+            "sha256": "55c6748b6416346abcafe398e59afefe7c38c5342ba6c33b4e2f95d996e65410"
         }
     },
     "hpcx": {
@@ -260,9 +260,9 @@
             "version": "3.3.3"
         },
         "mariner2.0": {
-            "version": "3.2.6-1",
+            "version": "3.3.8-1",
             "distribution": "rhel9",
-            "sha256": "54595a9bc9698ab4243f88f9d4471f409013a07b2785e2b765ea96e602ae0cfb"
+            "sha256": "09f4e4a16c0a1eeb91f3a3bac1063741b9f38787ec50b58fb1bdf57db5600aa1"
         }
     },
     "intel_one_mkl": {
