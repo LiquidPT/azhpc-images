@@ -94,7 +94,9 @@ IMPI_OFFLINE_INSTALLER=$(basename $IMPI_DOWNLOAD_URL)
 
 $COMMON_DIR/download_and_verify.sh $IMPI_DOWNLOAD_URL $IMPI_SHA256
 bash $IMPI_OFFLINE_INSTALLER -s -a -s --eula accept
-mv ${INSTALL_PREFIX}/intel/oneapi/mpi/${IMPI_VERSION}/modulefiles/mpi ${INSTALL_PREFIX}/intel/oneapi/mpi/${IMPI_VERSION}/modulefiles/impi
+
+impi_2021_version=${IMPI_VERSION:0:-2}
+mv ${INSTALL_PREFIX}/intel/oneapi/mpi/${impi_2021_version}/modulefiles/mpi ${INSTALL_PREFIX}/intel/oneapi/mpi/${impi_2021_version}/modulefiles/impi
 $COMMON_DIR/write_component_version.sh "IMPI" ${IMPI_VERSION}
 
 # Setup module files for MPIs
@@ -137,24 +139,24 @@ setenv          MPI_HOME        /opt/openmpi-${OMPI_VERSION}
 EOF
 
 #IntelMPI-v2021
-cat << EOF >> /usr/share/Modules/modulefiles/mpi/impi_${IMPI_VERSION}
+cat << EOF >> /usr/share/Modules/modulefiles/mpi/impi_${impi_2021_version}
 #%Module 1.0
 #
-#  Intel MPI ${IMPI_VERSION}
+#  Intel MPI ${impi_2021_version}
 #
 conflict        mpi
-module load /opt/intel/oneapi/mpi/${IMPI_VERSION}/modulefiles/impi
-setenv          MPI_BIN         /opt/intel/oneapi/mpi/${IMPI_VERSION}/bin
-setenv          MPI_INCLUDE     /opt/intel/oneapi/mpi/${IMPI_VERSION}/include
-setenv          MPI_LIB         /opt/intel/oneapi/mpi/${IMPI_VERSION}/lib
-setenv          MPI_MAN         /opt/intel/oneapi/mpi/${IMPI_VERSION}/man
-setenv          MPI_HOME        /opt/intel/oneapi/mpi/${IMPI_VERSION}
+module load /opt/intel/oneapi/mpi/${impi_2021_version}/modulefiles/impi/${impi_2021_version}
+setenv          MPI_BIN         /opt/intel/oneapi/mpi/${impi_2021_version}/bin
+setenv          MPI_INCLUDE     /opt/intel/oneapi/mpi/${impi_2021_version}/include
+setenv          MPI_LIB         /opt/intel/oneapi/mpi/${impi_2021_version}/lib
+setenv          MPI_MAN         /opt/intel/oneapi/mpi/${impi_2021_version}/man
+setenv          MPI_HOME        /opt/intel/oneapi/mpi/${impi_2021_version}
 EOF
 
 # Create symlinks for modulefiles
 ln -s /usr/share/Modules/modulefiles/mpi/mvapich2-${MVAPICH2_VERSION} /usr/share/Modules/modulefiles/mpi/mvapich2
 ln -s /usr/share/Modules/modulefiles/mpi/openmpi-${OMPI_VERSION} /usr/share/Modules/modulefiles/mpi/openmpi
-ln -s /usr/share/Modules/modulefiles/mpi/impi_${IMPI_VERSION} /usr/share/Modules/modulefiles/mpi/impi-2021
+ln -s /usr/share/Modules/modulefiles/mpi/impi_${impi_2021_version} /usr/share/Modules/modulefiles/mpi/impi-2021
 
 # cleanup downloaded tarballs and other installation files/folders
 rm -rf *.tar.gz *offline.sh
