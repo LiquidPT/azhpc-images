@@ -170,8 +170,12 @@ function verify_package_updates {
 }
 
 function verify_azcopy_installation {
-    sudo azcopy --version
-    check_exit_code "azcopy ${VERSION_AZCOPY}" "Failed to install azcopy"
+    if [[ "${ID}" != "Mariner" ]]
+    then
+        # temporary while Mariner in development
+        sudo azcopy --version
+        check_exit_code "azcopy ${VERSION_AZCOPY}" "Failed to install azcopy"
+    fi
 }
 
 function verify_mkl_installation {
@@ -255,8 +259,12 @@ function verify_pssh_installation {
 }
 
 function verify_aznfs_installation {
-    # verify AZNFS Mount Helper installation
-    check_exists "/opt/microsoft/aznfs/"
+    if [[ "${ID}" != "Mariner" ]]
+    then
+        # temporary while Mariner in development
+        # verify AZNFS Mount Helper installation
+        check_exists "/opt/microsoft/aznfs/"
+    fi
 }
 
 function verify_dcgm_installation {
