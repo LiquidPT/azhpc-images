@@ -62,12 +62,17 @@ function verify_hpcx_installation {
     check_exit_code "HPC-X" "Failed to run HPC-X"
     module unload mpi/hpcx
 
-    check_exists "${MODULE_FILES_ROOT}/mpi/hpcx-pmix"
+    if [[ "${ID}" != "Mariner" ]]
+    then
+        # temporary while Mariner in development
+        check_exists "${MODULE_FILES_ROOT}/mpi/hpcx-pmix"
 
-    module load mpi/hpcx-pmix
-    mpirun -np 2 --map-by ppr:2:node -x UCX_TLS=rc ${HPCX_OSU_DIR}/osu_latency
-    check_exit_code "HPC-X with PMIx" "Failed to run HPC-X with PMIx"
-    module unload mpi/hpcx-pmix
+        module load mpi/hpcx-pmix
+        mpirun -np 2 --map-by ppr:2:node -x UCX_TLS=rc ${HPCX_OSU_DIR}/osu_latency
+        check_exit_code "HPC-X with PMIx" "Failed to run HPC-X with PMIx"
+        module unload mpi/hpcx-pmix
+    fi
+
     module purge
 }
 
@@ -157,7 +162,7 @@ function verify_nccl_installation {
 function verify_package_updates {
     case ${ID} in
         ubuntu) sudo apt -q --assume-no update;;
-        almalinux) sudo yum update -y --setopt tsflags=test;
+        almalinux | mariner) sudo yum update -y --setopt tsflags=test;
             sudo yum clean packages;;
         * ) ;;
     esac
@@ -227,7 +232,7 @@ function verify_lustre_installation {
     # Verify lustre client package installation
     case ${ID} in
         ubuntu) dpkg -l | grep lustre-client;;
-        almalinux) dnf list installed | grep lustre-client;;
+        almalinux | mariner) dnf list installed | grep lustre-client;;
         * ) ;;
     esac
     check_exit_code "Lustre Installed" "Lustre not installed!"
@@ -243,7 +248,7 @@ function verify_pssh_installation {
     # Verify PSSH package installation
     case ${ID} in
         ubuntu) dpkg -l | grep pssh;;
-        almalinux) dnf list installed | grep pssh;;
+        almalinux | mariner) dnf list installed | grep pssh;;
         * ) ;;
     esac
     check_exit_code "PSSH Installed" "PSSH not installed!"
@@ -258,7 +263,7 @@ function verify_dcgm_installation {
     # Verify DCGM package installation
     case ${ID} in
         ubuntu) dpkg -l | grep datacenter-gpu-manager;;
-        almalinux) dnf list installed | grep datacenter-gpu-manager;;
+        almalinux | mariner) dnf list installed | grep datacenter-gpu-manager;;
         * ) ;;
     esac
     check_exit_code "DCGM Installed" "DCGM not installed!"
