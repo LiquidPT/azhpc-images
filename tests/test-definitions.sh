@@ -233,13 +233,16 @@ function verify_ipoib_status {
 }
 
 function verify_lustre_installation {
-    # Verify lustre client package installation
-    case ${ID} in
-        ubuntu) dpkg -l | grep lustre-client;;
-        almalinux | mariner) dnf list installed | grep lustre-client;;
-        * ) ;;
-    esac
-    check_exit_code "Lustre Installed" "Lustre not installed!"
+    if [[ "${ID}" != "Mariner" ]]
+    then
+        # Verify lustre client package installation
+        case ${ID} in
+            ubuntu) dpkg -l | grep lustre-client;;
+            almalinux) dnf list installed | grep lustre-client;;
+            * ) ;;
+        esac
+        check_exit_code "Lustre Installed" "Lustre not installed!"
+    fi
 }
 
 function verify_gdrcopy_installation {
