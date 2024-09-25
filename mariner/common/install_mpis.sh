@@ -1,169 +1,131 @@
 #!/bin/bash
-set -ex
 
-# Load gcc
-set CC=/usr/bin/gcc
-set GCC=/usr/bin/gcc
+function test_service {
+    local service=$1
+    
+    case $service in
+        check_sku_customization) verify_sku_customization_service;;
+        check_nvidia_fabricmanager) verify_nvidia_fabricmanager_service;;
+        check_sunrpc_tcp_settings) verify_sunrpc_tcp_settings_service;;
+        *) ;;
+    esac
+}
 
-INSTALL_PREFIX=/opt
+function test_component {
+    # Print divider
+    # echo "----------------------------------------------------------------"
+    local component=$1
+    
+    case $component in
+        check_impi_2021) verify_impi_2021_installation;;
+        check_impi_2018) verify_impi_2018_installation;;
+        check_cuda) verify_cuda_installation;;
+        check_nccl) verify_nccl_installation;;
+        check_gcc) verify_gcc_modulefile;;
+        check_aocl) verify_aocl_installation;;
+        check_aocc) verify_aocc_installation;;
+        check_docker) verify_docker_installation;;
+        check_dcgm) verify_dcgm_installation;;
+        * ) ;;
+    esac
+}
 
-# Install HPC-x
-hpcx_metadata=$(jq -r '.hpcx."'"$DISTRIBUTION"'"' <<< $COMPONENT_VERSIONS)
-HPCX_VERSION=$(jq -r '.version' <<< $hpcx_metadata)
-HPCX_SHA256=$(jq -r '.sha256' <<< $hpcx_metadata)
-HPCX_DOWNLOAD_URL=$(jq -r '.url' <<< $hpcx_metadata)
-TARBALL=$(basename $HPCX_DOWNLOAD_URL)
-HPCX_FOLDER=$(basename $HPCX_DOWNLOAD_URL .tbz)
+# Verify common component installations accross all distros
+function verify_common_components {
+    verify_package_updates;
+    verify_gcc_installation;
+    verify_azcopy_installation;
+    verify_ofed_installation;
+    verify_ib_device_status;
+    verify_hpcx_installation;
+    verify_mvapich2_installation;
+    verify_ompi_installation;
+    verify_mkl_installation;
+    verify_hpcdiag_installation;
+    verify_ipoib_status;
+    verify_lustre_installation;
+    verify_gdrcopy_installation;
+    verify_pssh_installation;
+    verify_aznfs_installation;
+}
 
-$COMMON_DIR/download_and_verify.sh $HPCX_DOWNLOAD_URL $HPCX_SHA256
-tar -xvf ${TARBALL}
+function initiate_test_suite {
+    # Run the common component tests
+    verify_common_components
 
-# Enables ompi configuration
-sed -i "s/\/build-result\//\/opt\//" ${HPCX_FOLDER}/hcoll/lib/pkgconfig/hcoll.pc
+    # Read the variable component test matrix
+    readarray -t components <<< "$(jq -r '.components[]' <<< $TEST_MATRIX)"
+    for component in "${components[@]}"; do
+        test_component $component;
+    done
 
-mv ${HPCX_FOLDER} ${INSTALL_PREFIX}
-HPCX_PATH=${INSTALL_PREFIX}/${HPCX_FOLDER}
-$COMMON_DIR/write_component_version.sh "HPCX" $HPCX_VERSION
+    # Read the variable service test matrix
+    readarray -t services <<< "$(jq -r '.services[]' <<< $TEST_MATRIX)"
+    for service in "${services[@]}"; do
+        test_service $service;
+    done
+}
 
-# exclude ucx from updates
-sed -i "$ s/$/ ucx*/" /etc/dnf/dnf.conf
+function set_test_matrix {
+    export distro=$(. /etc/os-release;echo $ID$VERSION_ID)
+    test_matrix_file=$(jq -r . $HPC_ENV/test/test-matrix.json)
+    export TEST_MATRIX=$(jq -r '."'"$distro"'" // empty' <<< $test_matrix_file)
+    
+    if [[ -z "$TEST_MATRIX" ]]; then
+        echo "*****No test matrix found for distribution $distro!*****"
+        exit 1
+    fi
+}
 
-# Setup module files for MPIs
-mkdir -p /usr/share/Modules/modulefiles/mpi/
+function set_sku_configuration {
+    local metadata_endpoint="http://169.254.169.254/metadata/instance?api-version=2019-06-04"
+    local vm_size=$(curl -H Metadata:true $metadata_endpoint | jq -r ".compute.vmSize")
+    export VMSIZE=$(echo "$vm_size" | awk '{print tolower($0)}')
+}
 
-# HPC-X
-cat << EOF >> /usr/share/Modules/modulefiles/mpi/hpcx-${HPCX_VERSION}
-#%Module 1.0
-#
-#  HPCx ${HPCX_VERSION}
-#
-conflict        mpi
-module load ${HPCX_PATH}/modulefiles/hpcx
-EOF
+# Function to set component versions from JSON file
+function set_component_versions {
+    local component_versions_file=$HPC_ENV/component_versions.txt
+    # read and set the component versions
+    local component_versions=$(cat ${component_versions_file} | jq -r 'to_entries | .[] | "VERSION_\(.key)=\(.value)"')
+    echo "Component versions: $component_versions"
 
-# Create symlinks for modulefiles
-ln -s /usr/share/Modules/modulefiles/mpi/hpcx-${HPCX_VERSION} /usr/share/Modules/modulefiles/mpi/hpcx
+    # Set the component versions based on the keys and values
+    while read -r component; do
+        if [[ ! -z "$component" ]]; then
+            eval "export $component" # Associates component name as variable and version as value
+        fi
+    done <<< "$component_versions"
+}
 
-HCOLL_PATH=${HPCX_PATH}/hcoll
-UCX_PATH=${HPCX_PATH}/ucx
+function set_module_files_path {
+    case $ID in
+    ubuntu)
+        export MODULE_FILES_ROOT="/usr/share/modules/modulefiles"
+        ;;
+    almalinux) 
+        export MODULE_FILES_ROOT="/usr/share/Modules/modulefiles"
+        ;;
+    * ) ;;
+esac
+}
 
-# MVAPICH2
-mvapich2_metadata=$(jq -r '.mvapich2."'"$DISTRIBUTION"'"' <<< $COMPONENT_VERSIONS)
-MVAPICH2_VERSION=$(jq -r '.version' <<< $mvapich2_metadata)
-MVAPICH2_SHA256=$(jq -r '.sha256' <<< $mvapich2_metadata)
-MVAPICH2_DOWNLOAD_URL="http://mvapich.cse.ohio-state.edu/download/mvapich/mv2/mvapich2-${MVAPICH2_VERSION}.tar.gz"
-TARBALL=$(basename $MVAPICH2_DOWNLOAD_URL)
-MVAPICH2_FOLDER=$(basename $MVAPICH2_DOWNLOAD_URL .tar.gz)
+# Load profile
+. /etc/profile
+# Set HPC environment
+HPC_ENV=/opt/azurehpc
+# Set test definitions
+. $HPC_ENV/test/test-definitions.sh
+# Set module files directory
+. /etc/os-release
+set_module_files_path
+# Set component versions
+set_component_versions
+# Set current SKU
+set_sku_configuration
+# Set test matrix
+set_test_matrix
+# Initiate test suite
+initiate_test_suite
 
-$COMMON_DIR/download_and_verify.sh $MVAPICH2_DOWNLOAD_URL $MVAPICH2_SHA256
-tar -xvf ${TARBALL}
-cd ${MVAPICH2_FOLDER}
-# gfortran 11.2.0
-# configure: error: The Fortran compiler gfortran will not compile files that call
-# the same routine with arguments of different types.
-./configure FFLAGS=-fallow-argument-mismatch --prefix=${INSTALL_PREFIX}/mvapich2-${MVAPICH2_VERSION} --enable-g=none --enable-fast=yes && make -j$(nproc) && make install
-cd ..
-$COMMON_DIR/write_component_version.sh "MVAPICH2" ${MVAPICH2_VERSION}
-
-
-# Install Open MPI
-ompi_metadata=$(jq -r '.ompi."'"$DISTRIBUTION"'"' <<< $COMPONENT_VERSIONS)
-OMPI_VERSION=$(jq -r '.version' <<< $ompi_metadata)
-OMPI_SHA256=$(jq -r '.sha256' <<< $ompi_metadata)
-OMPI_DOWNLOAD_URL=$(jq -r '.url' <<< $ompi_metadata)
-TARBALL=$(basename $OMPI_DOWNLOAD_URL)
-OMPI_FOLDER=$(basename $OMPI_DOWNLOAD_URL .tar.gz)
-
-$COMMON_DIR/download_and_verify.sh $OMPI_DOWNLOAD_URL $OMPI_SHA256
-tar -xvf $TARBALL
-cd $OMPI_FOLDER
-# ld can't see libocoms without hcoll lib path. Note: I couldn't get LDFLAGS to work
-./configure LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${HCOLL_PATH}/lib --prefix=${INSTALL_PREFIX}/openmpi-${OMPI_VERSION} --with-ucx=${UCX_PATH} --with-hcoll=${HCOLL_PATH} --enable-mpirun-prefix-by-default --with-platform=contrib/platform/mellanox/optimized && make -j$(nproc) && make install
-cd ..
-$COMMON_DIR/write_component_version.sh "OMPI" ${OMPI_VERSION}
-
-# exclude openmpi, perftest from updates
-sed -i "$ s/$/ openmpi perftest/" /etc/dnf/dnf.conf
-
-# Install Intel MPI
-impi_metadata=$(jq -r '.impi."'"$DISTRIBUTION"'"' <<< $COMPONENT_VERSIONS)
-IMPI_VERSION=$(jq -r '.version' <<< $impi_metadata)
-IMPI_SHA256=$(jq -r '.sha256' <<< $impi_metadata)
-IMPI_DOWNLOAD_URL=$(jq -r '.url' <<< $impi_metadata)
-IMPI_OFFLINE_INSTALLER=$(basename $IMPI_DOWNLOAD_URL)
-
-$COMMON_DIR/download_and_verify.sh $IMPI_DOWNLOAD_URL $IMPI_SHA256
-bash $IMPI_OFFLINE_INSTALLER -s -a -s --eula accept
-
-impi_2021_version=${IMPI_VERSION:0:-2}
-mv ${INSTALL_PREFIX}/intel/oneapi/mpi/${impi_2021_version}/etc/modulefiles/mpi ${INSTALL_PREFIX}/intel/oneapi/mpi/${impi_2021_version}/etc/modulefiles/impi
-$COMMON_DIR/write_component_version.sh "IMPI" ${IMPI_VERSION}
-
-# Setup module files for MPIs
-mkdir -p /usr/share/Modules/modulefiles/mpi/
-
-# MVAPICH2
-cat << EOF >> /usr/share/Modules/modulefiles/mpi/mvapich2-${MVAPICH2_VERSION}
-#%Module 1.0
-#
-#  MVAPICH2 ${MVAPICH2_VERSION}
-#
-conflict        mpi
-module load ${GCC_VERSION}
-prepend-path    PATH            /opt/mvapich2-${MVAPICH2_VERSION}/bin
-prepend-path    LD_LIBRARY_PATH /opt/mvapich2-${MVAPICH2_VERSION}/lib
-prepend-path    MANPATH         /opt/mvapich2-${MVAPICH2_VERSION}/share/man
-setenv          MPI_BIN         /opt/mvapich2-${MVAPICH2_VERSION}/bin
-setenv          MPI_INCLUDE     /opt/mvapich2-${MVAPICH2_VERSION}/include
-setenv          MPI_LIB         /opt/mvapich2-${MVAPICH2_VERSION}/lib
-setenv          MPI_MAN         /opt/mvapich2-${MVAPICH2_VERSION}/share/man
-setenv          MPI_HOME        /opt/mvapich2-${MVAPICH2_VERSION}
-EOF
-
-# OpenMPI
-cat << EOF >> /usr/share/Modules/modulefiles/mpi/openmpi-${OMPI_VERSION}
-#%Module 1.0
-#
-#  OpenMPI ${OMPI_VERSION}
-#
-conflict        mpi
-module load ${GCC_VERSION}
-prepend-path    PATH            /opt/openmpi-${OMPI_VERSION}/bin
-prepend-path    LD_LIBRARY_PATH /opt/openmpi-${OMPI_VERSION}/lib
-prepend-path    MANPATH         /opt/openmpi-${OMPI_VERSION}/share/man
-setenv          MPI_BIN         /opt/openmpi-${OMPI_VERSION}/bin
-setenv          MPI_INCLUDE     /opt/openmpi-${OMPI_VERSION}/include
-setenv          MPI_LIB         /opt/openmpi-${OMPI_VERSION}/lib
-setenv          MPI_MAN         /opt/openmpi-${OMPI_VERSION}/share/man
-setenv          MPI_HOME        /opt/openmpi-${OMPI_VERSION}
-EOF
-
-#IntelMPI-v2021
-cat << EOF >> /usr/share/Modules/modulefiles/mpi/impi_${impi_2021_version}
-#%Module 1.0
-#
-#  Intel MPI ${impi_2021_version}
-#
-conflict        mpi
-module load /opt/intel/oneapi/mpi/${impi_2021_version}/modulefiles/impi/${impi_2021_version}
-setenv          MPI_BIN         /opt/intel/oneapi/mpi/${impi_2021_version}/bin
-setenv          MPI_INCLUDE     /opt/intel/oneapi/mpi/${impi_2021_version}/include
-setenv          MPI_LIB         /opt/intel/oneapi/mpi/${impi_2021_version}/lib
-setenv          MPI_MAN         /opt/intel/oneapi/mpi/${impi_2021_version}/man
-setenv          MPI_HOME        /opt/intel/oneapi/mpi/${impi_2021_version}
-EOF
-
-# Create symlinks for modulefiles
-ln -s /usr/share/Modules/modulefiles/mpi/mvapich2-${MVAPICH2_VERSION} /usr/share/Modules/modulefiles/mpi/mvapich2
-ln -s /usr/share/Modules/modulefiles/mpi/openmpi-${OMPI_VERSION} /usr/share/Modules/modulefiles/mpi/openmpi
-ln -s /usr/share/Modules/modulefiles/mpi/impi_${impi_2021_version} /usr/share/Modules/modulefiles/mpi/impi-2021
-
-# cleanup downloaded tarballs and other installation files/folders
-rm -rf *.tar.gz *offline.sh
-rm -rf -- */
-
-# cleanup downloaded tarball for HPC-x
-rm -rf *.tbz
-
-# # Setup permissions
-# chmod -R 755 /usr/share/Modules/modulefiles/mpi/
+echo "ALL OK!"
