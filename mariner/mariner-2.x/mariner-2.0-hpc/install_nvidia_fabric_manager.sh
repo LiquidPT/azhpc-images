@@ -12,4 +12,4 @@ sed -i "$ s/$/ nvidia-fabric-manager/" /etc/dnf/dnf.conf
 mkdir -p /etc/tdnf/locks.d
 echo nvidia-fabric-manager >> /etc/tdnf/locks.d/nvidia.conf
 
-$COMMON_DIR/write_component_version.sh "nvidia_fabricmanager" $nvidia_fabricmanager_version
+$COMMON_DIR/write_component_version.sh "NVIDIA_FABRIC_MANAGER" $nvidia_fabricmanager_version

@@ -16,4 +16,4 @@ export COMPONENT_VERSIONS=$(jq -r . $TOP_DIR/requirements.json)
 # Kernel
 export KERNEL=$(rpm -q kernel | sed 's/kernel\-//g')
 
-$COMMON_DIR/write_component_version.sh "distribution" $DISTRIBUTION
+$COMMON_DIR/write_component_version.sh "DISTRIBUTION" $DISTRIBUTION

@@ -40,7 +40,7 @@ ctr plugin ls
 
 # Write the docker version to components file
 docker_version=$(docker --version | awk -F' ' '{print $3}')
-$COMMON_DIR/write_component_version.sh "docker" ${docker_version::-1}
+$COMMON_DIR/write_component_version.sh "DOCKER" ${docker_version::-1}
 
 # Clean repos
 rm -rf /etc/yum.repos.d/nvidia-*

@@ -12,7 +12,7 @@ dcgm_download_url=https://developer.download.nvidia.com/compute/cuda/repos/$dcgm
 $COMMON_DIR/download_and_verify.sh $dcgm_download_url $dcgm_sha256
 dnf install -y ./datacenter-gpu-manager-$dcgm_version-x86_64.rpm
 
-$COMMON_DIR/write_component_version.sh "dcgm" $dcgm_version
+$COMMON_DIR/write_component_version.sh "DCGM" $dcgm_version
 
 # Enable the dcgm service
 systemctl --now enable nvidia-dcgm

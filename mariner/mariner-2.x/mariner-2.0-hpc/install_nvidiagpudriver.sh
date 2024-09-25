@@ -8,7 +8,7 @@ curl https://packages.microsoft.com/cbl-mariner/2.0/prod/nvidia/x86_64/config.re
 nvidia_driver_metadata=$(jq -r '.nvidia."'"$DISTRIBUTION"'".driver' <<< $COMPONENT_VERSIONS)
 NVIDIA_DRIVER_VERSION=$(jq -r '.version' <<< $nvidia_driver_metadata)
 tdnf install -y cuda-$NVIDIA_DRIVER_VERSION # Note: Nvidia driver is named cuda in Mariner packages repo
-$COMMON_DIR/write_component_version.sh "nvidia" $NVIDIA_DRIVER_VERSION
+$COMMON_DIR/write_component_version.sh "NVIDIA" $NVIDIA_DRIVER_VERSION
 
 # Temp disable NVIDIA driver updates
 mkdir -p /etc/tdnf/locks.d

@@ -36,7 +36,7 @@ tar zxvf $tarball
 pushd $mofed_folder
 ./install.pl --all --without-openmpi
 popd
-$COMMON_DIR/write_component_version.sh "mofed" $mofed_version
+$COMMON_DIR/write_component_version.sh "OFED" $mofed_version
 
 # Restarting openibd
 /etc/init.d/openibd restart
