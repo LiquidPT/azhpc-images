@@ -62,7 +62,7 @@ function verify_hpcx_installation {
     check_exit_code "HPC-X" "Failed to run HPC-X"
     module unload mpi/hpcx
 
-    if [ "${ID}" != "mariner" ]
+    if [[ "${ID}" != "mariner" ]]
     then
         # temporary while Mariner in development
         check_exists "${MODULE_FILES_ROOT}/mpi/hpcx-pmix"
@@ -170,7 +170,7 @@ function verify_package_updates {
 }
 
 function verify_azcopy_installation {
-    if [ "${ID}" != "mariner" ]
+    if [[ "${ID}" != "mariner" ]]
     then
         # temporary while Mariner in development
         sudo azcopy --version
@@ -233,7 +233,7 @@ function verify_ipoib_status {
 }
 
 function verify_lustre_installation {
-    if [ "${ID}" != "mariner" ]
+    if [[ "${ID}" != "mariner" ]]
     then
         # Verify lustre client package installation
         case ${ID} in
@@ -262,7 +262,7 @@ function verify_pssh_installation {
 }
 
 function verify_aznfs_installation {
-    if [ "${ID}" != "mariner" ]
+    if [[ "${ID}" != "mariner" ]]
     then
         # temporary while Mariner in development
         # verify AZNFS Mount Helper installation
