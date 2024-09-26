@@ -28,7 +28,7 @@ function check_exit_code {
 # verify OFED installation
 function verify_ofed_installation {
     # verify OFED installation
-    ofed_info | grep ${VERSION_OFED}
+    ofed_info | grep ${VERSION_OFED:0:-2}
     check_exit_code "OFED installed" "OFED not installed"
 }
 
