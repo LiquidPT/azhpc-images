@@ -1,12 +1,13 @@
 #!/bin/bash
 set -ex
 
-# Disable Cloud-Init
-cat << EOF >> /etc/cloud/cloud.cfg.d/99-custom-networking.cfg
-network: {config: disabled}
+# Disable cloud-init
+echo network: {config: disabled} | sudo tee /etc/cloud/cloud.cfg.d/99-disable-network-config.cfg
+bash -c "cat > /etc/netplan/50-cloud-init.yaml" <<'EOF'
+network:
+    ethernets:
+        eth0:
+            dhcp4: true
+    version: 2
 EOF
-
-# Remove Hardware Mac Address and DHCP Name
-# cp /etc/sysconfig/network-scripts/ifcfg-eth0 tempFile
-# grep -v -E "HWADDR=|DHCP_HOSTNAME=" /etc/sysconfig/network-scripts/ifcfg-eth0 > tempFile
-# mv tempFile /etc/sysconfig/network-scripts/ifcfg-eth0
+netplan apply
