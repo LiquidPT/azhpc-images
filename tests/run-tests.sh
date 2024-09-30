@@ -30,6 +30,7 @@ function test_component {
         check_lustre) verify_lustre_installation;;
         check_gdrcopy) verify_gdrcopy_installation;;
         check_aznfs) verify_aznfs_installation;;
+        check_pssh) verify_pssh_installation;;
         * ) ;;
     esac
 }
@@ -46,7 +47,6 @@ function verify_common_components {
     verify_mkl_installation;
     verify_hpcdiag_installation;
     verify_ipoib_status;
-    verify_pssh_installation;
 }
 
 function initiate_test_suite {
