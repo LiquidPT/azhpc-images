@@ -26,6 +26,10 @@ function test_component {
         check_aocc) verify_aocc_installation;;
         check_docker) verify_docker_installation;;
         check_dcgm) verify_dcgm_installation;;
+        check_azcopy) verify_azcopy_installation;;
+        check_lustre) verify_lustre_installation;;
+        check_gdrcopy) verify_gdrcopy_installation;;
+        check_aznfs) verify_aznfs_installation;;
         * ) ;;
     esac
 }
@@ -34,7 +38,6 @@ function test_component {
 function verify_common_components {
     verify_package_updates;
     verify_gcc_installation;
-    verify_azcopy_installation;
     verify_ofed_installation;
     verify_ib_device_status;
     verify_hpcx_installation;
@@ -43,10 +46,7 @@ function verify_common_components {
     verify_mkl_installation;
     verify_hpcdiag_installation;
     verify_ipoib_status;
-    verify_lustre_installation;
-    verify_gdrcopy_installation;
     verify_pssh_installation;
-    verify_aznfs_installation;
 }
 
 function initiate_test_suite {

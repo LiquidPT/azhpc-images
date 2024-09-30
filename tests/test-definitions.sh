@@ -170,12 +170,8 @@ function verify_package_updates {
 }
 
 function verify_azcopy_installation {
-    if [[ "${ID}" != "mariner" ]]
-    then
-        # temporary while Mariner in development
-        sudo azcopy --version
-        check_exit_code "azcopy ${VERSION_AZCOPY}" "Failed to install azcopy"
-    fi
+    sudo azcopy --version
+    check_exit_code "azcopy ${VERSION_AZCOPY}" "Failed to install azcopy"
 }
 
 function verify_mkl_installation {
@@ -233,16 +229,13 @@ function verify_ipoib_status {
 }
 
 function verify_lustre_installation {
-    if [[ "${ID}" != "mariner" ]]
-    then
-        # Verify lustre client package installation
-        case ${ID} in
-            ubuntu) dpkg -l | grep lustre-client;;
-            almalinux) dnf list installed | grep lustre-client;;
-            * ) ;;
-        esac
-        check_exit_code "Lustre Installed" "Lustre not installed!"
-    fi
+    # Verify lustre client package installation
+    case ${ID} in
+        ubuntu) dpkg -l | grep lustre-client;;
+        almalinux) dnf list installed | grep lustre-client;;
+        * ) ;;
+    esac
+    check_exit_code "Lustre Installed" "Lustre not installed!"
 }
 
 function verify_gdrcopy_installation {
@@ -262,12 +255,8 @@ function verify_pssh_installation {
 }
 
 function verify_aznfs_installation {
-    if [[ "${ID}" != "mariner" ]]
-    then
-        # temporary while Mariner in development
-        # verify AZNFS Mount Helper installation
-        check_exists "/opt/microsoft/aznfs/"
-    fi
+    # verify AZNFS Mount Helper installation
+    check_exists "/opt/microsoft/aznfs/"
 }
 
 function verify_dcgm_installation {
