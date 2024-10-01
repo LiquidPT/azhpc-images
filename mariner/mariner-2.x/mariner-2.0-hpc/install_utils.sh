@@ -12,6 +12,7 @@ tdnf repolist
 
 # Install Kernel dependencies
 tdnf install -y kernel-headers-$(uname -r) \
+                kernel-modules-extra-$(uname -r) \
                 kernel-devel-$(uname -r) # Needed for MOFED all of a sudden
 
 # Install Python 3
