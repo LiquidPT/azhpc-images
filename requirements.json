@@ -200,7 +200,7 @@
         "mariner2.0": {
             "driver": {
                 "version": "12-5",
-                "distribution": "rhel8"
+                "distribution": "cm2"
             },
             "samples": {
                 "version": "12.5",
