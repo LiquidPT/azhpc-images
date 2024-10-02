@@ -16,7 +16,7 @@
         "services": ["check_sku_customization", "check_nvidia_fabricmanager", "check_sunrpc_tcp_settings"]
     },
     "mariner2.0": {
-        "components": ["check_gdrcopy", "check_impi_2021", "check_cuda", "check_nccl", "check_aocl", "check_aocc", "check_docker", "check_dcgm"],
+        "components": ["check_impi_2021", "check_cuda", "check_nccl", "check_aocl", "check_aocc", "check_docker", "check_dcgm"],
         "services": ["check_sku_customization", "check_nvidia_fabricmanager", "check_sunrpc_tcp_settings"]
     }
 }
