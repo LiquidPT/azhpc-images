@@ -199,7 +199,7 @@
         },
         "mariner2.0": {
             "driver": {
-                "version": "12-5",
+                "version": "12-6",
                 "distribution": "cm2"
             },
             "samples": {
