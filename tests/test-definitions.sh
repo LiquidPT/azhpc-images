@@ -124,8 +124,8 @@ function verify_cuda_installation {
     check_exists "/usr/local/cuda/"
     
     # Verify the compilation of CUDA samples
-    # /usr/local/cuda/samples/0_Introduction/mergeSort/mergeSort
-    # check_exit_code "CUDA Samples ${VERSION_CUDA}" "Failed to perform merge sort using CUDA Samples"
+    /usr/local/cuda/samples/0_Introduction/mergeSort/mergeSort
+    check_exit_code "CUDA Samples ${VERSION_CUDA}" "Failed to perform merge sort using CUDA Samples"
 }
 
 function verify_nccl_installation {
