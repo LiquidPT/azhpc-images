@@ -36,7 +36,7 @@ $COMMON_DIR/download_and_verify.sh $CUDA_SAMPLES_DOWNLOAD_URL $CUDA_SAMPLES_SHA2
 tar -xvf ${TARBALL}
 pushd ./cuda-samples-${CUDA_SAMPLES_VERSION}
 make -j $(nproc)
-mv -vT ./Samples /usr/local/cuda-${CUDA_DRIVER_VERSION}/samples
+mv -vT ./Samples /usr/local/cuda-${CUDA_DRIVER_VERSION//-/.}/samples
 popd
 
 # Temporarily install NV Peer Memory
